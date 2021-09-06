@@ -22,7 +22,7 @@ public class HandlerFactory {
    * 支持正则的映射
    */
   private static final Map<Class<?>, Map<Pattern, IHandler>> patternHandlerCache = new HashMap<>(8);
-  private static final IHandler DEFAULT_HANDLER = () -> "";
+  private static final IHandler DEFAULT_HANDLER = () -> Collections.singleton("");
 
   static {
     skipUrl.add("/favicon.ico");
@@ -40,13 +40,14 @@ public class HandlerFactory {
     }
 
     final boolean enablePattern = handler.enablePattern();
+    final Collection<String> requestMapping = handler.getRequestMapping();
     if (enablePattern) {
-      final Map<Pattern, IHandler> handlerMap = patternHandlerCache.getOrDefault(key, new HashMap<>(2));
-      handlerMap.put(Pattern.compile(handler.getRequestMapping()), handler);
+      final Map<Pattern, IHandler> handlerMap = patternHandlerCache.getOrDefault(key, new HashMap<>(4));
+      requestMapping.forEach(item -> handlerMap.put(Pattern.compile(item), handler));
       patternHandlerCache.put(key, handlerMap);
     } else {
       final Map<String, IHandler> handlerMap = normalHandlerCache.getOrDefault(key, new HashMap<>(2));
-      handlerMap.put(handler.getRequestMapping(), handler);
+      requestMapping.forEach(item -> handlerMap.put(item, handler));
       normalHandlerCache.put(key, handlerMap);
     }
   }

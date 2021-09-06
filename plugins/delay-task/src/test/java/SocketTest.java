@@ -11,11 +11,10 @@ public class SocketTest {
       new Thread(() -> {
         try {
           final InputStream inputStream = socket.getInputStream();
-          Str
         } catch (IOException e) {
           e.printStackTrace();
         }
       }).start();
-     }
+    }
   }
 }

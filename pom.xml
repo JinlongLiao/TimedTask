@@ -11,7 +11,8 @@
   <modules>
     <module>common</module>
     <module>core</module>
-    <module>timetask</module>
+    <module>plugins</module>
+    <module>boot</module>
   </modules>
   <repositories>
     <repository>

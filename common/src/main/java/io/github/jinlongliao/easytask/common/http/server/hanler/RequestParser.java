@@ -1,19 +1,16 @@
 package io.github.jinlongliao.easytask.common.http.server.hanler;
 
 
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
+import com.alibaba.fastjson.JSONObject;
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * @author liaojinlong
@@ -21,6 +18,7 @@ import java.util.Map;
  */
 public class RequestParser {
   private HttpRequest httpRequest;
+  private static final String JSON_CONTEXT = "application/json";
 
   /**
    * 构造一个解析器
@@ -81,6 +79,18 @@ public class RequestParser {
 
     Map<String, String> paramMap = new HashMap<>(8);
     FullHttpRequest fullReq = (FullHttpRequest) request;
+    final boolean isJson = request.headers().get(HttpHeaderNames.CONTENT_TYPE).toLowerCase(Locale.ROOT).startsWith(JSON_CONTEXT);
+    if (isJson) {
+      final ByteBuf content = ((FullHttpRequest) request).content();
+      final int readableBytes = content.readableBytes();
+      if (readableBytes < 1) {
+        return Collections.emptyMap();
+      }
+      final byte[] bytes = new byte[readableBytes];
+      content.readBytes(bytes);
+      final String jsonS = new String(bytes, StandardCharsets.UTF_8);
+      return JSONObject.parseObject(jsonS, Map.class);
+    }
     // 是POST请求
     HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fullReq);
     decoder.offer(fullReq);

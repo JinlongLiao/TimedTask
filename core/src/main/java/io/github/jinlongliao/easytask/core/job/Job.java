@@ -8,7 +8,7 @@ import io.github.jinlongliao.easytask.core.constant.JobStatus;
  * @author liaojinlong
  * @since 2021/9/1 12:04
  */
-public class Job {
+public abstract class Job {
   /**
    * 任务状态
    */
@@ -72,6 +72,12 @@ public class Job {
   public void setExtraData(String extraData) {
     this.extraData = extraData;
   }
+
+  /**
+   * 返回任务类型
+   * return /
+   */
+  public abstract String getJobType();
 
   /**
    * 用于标识任务的唯一标识
