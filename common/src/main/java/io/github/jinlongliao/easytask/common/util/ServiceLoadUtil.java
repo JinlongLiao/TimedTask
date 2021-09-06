@@ -141,9 +141,11 @@ public class ServiceLoadUtil {
     CLASS_CACHE.put(tClass, classList.stream().collect(Collectors.toList()));
   }
 
-
   /**
    * 加载并处理
+   *
+   * @author liaojinlong
+   * @since 2021/9/6 22:38
    */
   public interface LoadProcess {
     /**
