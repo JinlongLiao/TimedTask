@@ -1,5 +1,6 @@
 package io.github.jinlongliao.easytask.common.util;
 
+import com.sun.tools.classfile.Opcode;
 import io.github.jinlongliao.easytask.common.annotation.Order;
 
 import java.util.*;
@@ -15,26 +16,31 @@ import java.util.stream.Collectors;
  */
 public class ServiceLoadUtil {
   private static Map<Class<?>, List<Class<?>>> CLASS_CACHE = new ConcurrentHashMap<>(8);
-
-  public static <T> List<Class<T>> loadClass(Class<T> tClass) {
-    if (CLASS_CACHE.containsKey(tClass)) {
-      List<Class<?>> classes = CLASS_CACHE.get(tClass);
-      if (classes != null) {
-        return classes.stream().map(t -> (Class<T>) t).collect(Collectors.toList());
-      }
-
+  private static Map<Class<?>, LoadProcess> LOAD_PROCESS_CACHE = new ConcurrentHashMap<>(8);
+  private static final LoadProcess DEFAULT_LOAD_PROCESS = new LoadProcess() {
+    @Override
+    public <T> List<Class<T>> initLoader(Iterator<T> iterator) {
+      return LoadProcess.super.initLoader(iterator);
     }
-    final List<Class<T>> tmp = new ArrayList<>(8);
 
-    final Iterator<T> iterator = ServiceLoader.load(tClass).iterator();
-    iterator.forEachRemaining(t -> {
-      tmp.add((Class<T>) t.getClass());
-    });
-    List<Class<T>> classList = toSort(tmp);
-    CLASS_CACHE.put(tClass, classList.stream().collect(Collectors.toList()));
-    return classList;
-  }
+    @Override
+    public <T> List<Class<T>> filter(List<Class<T>> collection) {
+      return LoadProcess.super.filter(collection);
+    }
 
+    @Override
+    public <T> boolean beforeAdd(Class<T> tClass, List<Class<T>> classes, boolean sort) {
+      return LoadProcess.super.beforeAdd(tClass, classes, sort);
+    }
+  };
+
+  /**
+   * 排序过滤
+   *
+   * @param tmp
+   * @param <T>
+   * @return /
+   */
   private static <T> List<Class<T>> toSort(List<Class<T>> tmp) {
     AtomicInteger remove = new AtomicInteger();
     tmp.sort((a, b) -> {
@@ -69,11 +75,64 @@ public class ServiceLoadUtil {
     return classList;
   }
 
-  public static <T> void addNewJob(Class<T> tClass, List<Class<T>> classList, boolean sort) {
+  /**
+   * 加载 SPI，基于默认的处理策略
+   *
+   * @param tClass
+   * @param <T>
+   * @return /
+   */
+  public static <T> List<Class<T>> loadClass(Class<T> tClass) {
+    return loadClass(tClass, DEFAULT_LOAD_PROCESS);
+  }
+
+  /**
+   * * 加载 SPI，基于指定的处理策略
+   *
+   * @param tClass
+   * @param loadProcess
+   * @param <T>
+   * @return /
+   */
+  public static <T> List<Class<T>> loadClass(Class<T> tClass, LoadProcess loadProcess) {
+    if (!LOAD_PROCESS_CACHE.containsKey(loadProcess)) {
+      LOAD_PROCESS_CACHE.put(tClass, loadProcess);
+    }
+    if (CLASS_CACHE.containsKey(tClass)) {
+      List<Class<?>> classes = CLASS_CACHE.get(tClass);
+      if (classes != null) {
+        return classes.stream().map(t -> (Class<T>) t).collect(Collectors.toList());
+      }
+
+    }
+    List<Class<T>> classList = loadProcess.filter(loadProcess.initLoader(ServiceLoader.load(tClass).iterator()));
+    CLASS_CACHE.put(tClass, classList.stream().collect(Collectors.toList()));
+    return classList;
+  }
+
+  /**
+   * 新增Class
+   *
+   * @param tClass
+   * @param classList
+   * @param <T>
+   */
+  public static <T> void addClass(Class<T> tClass, List<Class<T>> classList) {
+    addNewJob(tClass, classList, false, LOAD_PROCESS_CACHE.getOrDefault(tClass, DEFAULT_LOAD_PROCESS));
+  }
+
+  public static <T> void addNewJob(Class<T> tClass, List<Class<T>> classList, LoadProcess loadProcess) {
+    addNewJob(tClass, classList, false, loadProcess);
+  }
+
+  public static <T> void addNewJob(Class<T> tClass, List<Class<T>> classList, boolean sort, LoadProcess loadProcess) {
     List<Class<?>> classes = CLASS_CACHE.get(tClass);
     if (classes != null) {
       for (Class<?> aClass : classes) {
-        classList.add((Class<T>) aClass);
+        boolean add = loadProcess.beforeAdd(tClass, classList, sort);
+        if (add) {
+          classList.add((Class<T>) aClass);
+        }
       }
     }
     if (sort) {
@@ -82,7 +141,51 @@ public class ServiceLoadUtil {
     CLASS_CACHE.put(tClass, classList.stream().collect(Collectors.toList()));
   }
 
-  public static <T> void addNewJob(Class<T> tClass, List<Class<T>> classList) {
-    addNewJob(tClass, classList, false);
+
+  /**
+   * 加载并处理
+   */
+  public interface LoadProcess {
+    /**
+     * 初步加载试
+     *
+     * @param iterator
+     * @param <T>
+     * @return /
+     */
+    default <T> List<Class<T>> initLoader(Iterator<T> iterator) {
+      final List<Class<T>> tmp = new ArrayList<>(8);
+      iterator.forEachRemaining(t -> {
+        tmp.add((Class<T>) t.getClass());
+      });
+      List<Class<T>> classList = toSort(tmp);
+      return classList;
+    }
+
+    /**
+     * 过滤排序后
+     *
+     * @param collection
+     * @param <T>
+     * @return /
+     */
+
+    default <T> List<Class<T>> filter(List<Class<T>> collection) {
+      return toSort(collection);
+    }
+
+    /**
+     * 添加前
+     *
+     * @param tClass
+     * @param classList
+     * @param sort
+     * @param <T>
+     * @return /
+     */
+    default <T> boolean beforeAdd(Class<T> tClass, List<Class<T>> classList, boolean sort) {
+      return true;
+    }
   }
+
 }

@@ -14,6 +14,5 @@ public class ServiceLoadUtilTest {
     final List<Class<Abs>> classList = ServiceLoadUtil.loadClass(Abs.class);
     Assert.assertNotNull(classList);
     Assert.assertFalse(classList.contains(Imp4.class));
-
   }
 }

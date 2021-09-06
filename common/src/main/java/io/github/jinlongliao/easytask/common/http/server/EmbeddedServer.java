@@ -64,7 +64,7 @@ public final class EmbeddedServer implements Closeable {
       child = new EpollEventLoopGroup(processors);
     }
     try {
-      ServerBootstrap bootstrap = new ServerBootstrap();
+      bootstrap = new ServerBootstrap();
       bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
       bootstrap.group(group, child)
         .channel(NioServerSocketChannel.class)
