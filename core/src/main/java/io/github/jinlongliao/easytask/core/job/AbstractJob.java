@@ -2,13 +2,15 @@ package io.github.jinlongliao.easytask.core.job;
 
 import io.github.jinlongliao.easytask.core.constant.JobStatus;
 
+import java.util.Collection;
+
 /**
  * 需要执行的任务
  *
  * @author liaojinlong
  * @since 2021/9/1 12:04
  */
-public abstract class Job {
+public abstract class AbstractJob {
   /**
    * 任务状态
    */
@@ -75,9 +77,10 @@ public abstract class Job {
 
   /**
    * 返回任务类型
+   * <p>
    * return /
    */
-  public abstract String getJobType();
+  public abstract Collection<String> getJobType();
 
   /**
    * 用于标识任务的唯一标识
@@ -86,5 +89,16 @@ public abstract class Job {
    */
   public String uuid() {
     return getGroupKey() + "_" + getUnionKey() + "_" + getTaskId();
+  }
+
+  @Override
+  public String toString() {
+    return "AbstractJob{" +
+      "jobStatus=" + jobStatus +
+      ", groupKey='" + groupKey + '\'' +
+      ", unionKey='" + unionKey + '\'' +
+      ", taskId='" + taskId + '\'' +
+      ", extraData='" + extraData + '\'' +
+      '}';
   }
 }

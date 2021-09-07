@@ -1,6 +1,6 @@
 package io.github.jinlongliao.easytask.core.handler;
 
-import io.github.jinlongliao.easytask.core.job.Job;
+import io.github.jinlongliao.easytask.core.job.AbstractJob;
 
 import java.util.Collection;
 
@@ -17,12 +17,12 @@ public interface IJobHandler {
    * @param job
    * @return /
    */
-  boolean handlerJob(Job job);
+  boolean handlerJob(AbstractJob job);
 
   /**
    * 返回支持处理的JOB
    *
    * @return /
    */
-  Collection<Class<? extends Job>> supportJob();
+  Collection<Class<? extends AbstractJob>> supportJob();
 }

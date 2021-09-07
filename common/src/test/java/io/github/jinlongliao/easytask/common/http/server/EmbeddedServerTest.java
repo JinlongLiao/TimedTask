@@ -49,18 +49,18 @@ public class EmbeddedServerTest {
         final FullHttpResponse response = new DefaultFullHttpResponse(request.protocolVersion(),
           new HttpResponseStatus(200, ""),
           Unpooled.wrappedBuffer(JSON.toJSONBytes(paramMap)));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
         return response;
       }
     });
     OkHttpClient client = new OkHttpClient().newBuilder()
       .build();
-    MediaType mediaType = MediaType.parse("application/json");
+    MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
     RequestBody body = RequestBody.create("{\"assignee\" : \"jbarrez\"}", mediaType);
     Request request = new Request.Builder()
       .url("http://localhost:8888/uewuew")
       .method("POST", body)
-      .addHeader("Content-Type", "application/json")
+      .addHeader("Content-Type", "application/json; charset=UTF-8")
       .build();
     Response response = client.newCall(request).execute();
     System.out.println("response = " + response);

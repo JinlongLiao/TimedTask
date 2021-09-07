@@ -1,6 +1,6 @@
 package io.github.jinlongliao.easytask.boot;
 
-import io.github.jinlongliao.easytask.boot.handler.HandlerMsgV1Service;
+import io.github.jinlongliao.easytask.boot.core.HandlerMsgV1Service;
 import io.github.jinlongliao.easytask.common.http.server.EmbeddedServer;
 import io.github.jinlongliao.easytask.common.http.server.EmbeddedServerDispatcher;
 import io.github.jinlongliao.easytask.common.http.server.hanler.*;
@@ -16,25 +16,21 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultBootStart {
   private static final Logger log = LoggerFactory.getLogger(DefaultBootStart.class);
+  private EmbeddedServer embeddedServer;
 
-  public static void main(String[] args) {
-    try {
-      startServer("0.0.0.0", 8888, null);
-    } catch (Exception e) {
-      log.error(e.getLocalizedMessage(), e);
-    }
-  }
-
-  private static void startServer(String host, int port, SslContext sslCtx) {
+  public void startServer(String host, int port, SslContext sslCtx) {
     final HandlerFactory factory = HandlerFactory.getInstance();
     factory.addHandler(EmbeddedServerDispatcher.class, new HandlerMsgV1Service());
     new Thread(() -> {
       try {
-        new EmbeddedServer().newServer(host, port, sslCtx);
+        (embeddedServer = new EmbeddedServer()).newServer(host, port, sslCtx);
       } catch (Exception e) {
         log.error(e.getLocalizedMessage(), e);
       }
     }).start();
+  }
 
+  public EmbeddedServer getEmbeddedServer() {
+    return embeddedServer;
   }
 }

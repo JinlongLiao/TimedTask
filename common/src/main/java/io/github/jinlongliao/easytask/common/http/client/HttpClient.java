@@ -108,9 +108,9 @@ public class HttpClient {
     public static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
 
     /**
-     * 'application/json' content type header value
+     * 'application/json; charset=UTF-8' content type header value
      */
-    public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_JSON = "application/json; charset=UTF-8";
 
     /**
      * 'gzip' encoding header value
@@ -2563,7 +2563,7 @@ public class HttpClient {
     }
 
     /**
-     * Set the 'Accept' header to 'application/json'
+     * Set the 'Accept' header to 'application/json; charset=UTF-8'
      *
      * @return this request
      */

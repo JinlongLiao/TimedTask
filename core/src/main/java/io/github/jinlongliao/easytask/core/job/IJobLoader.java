@@ -15,7 +15,7 @@ public interface IJobLoader {
    *
    * @return /
    */
-  List<Job> loadAllJob();
+  List<AbstractJob> loadAllJob();
 
   /**
    * 新增JOB
@@ -23,7 +23,7 @@ public interface IJobLoader {
    * @param job
    * @return /
    */
-  boolean addJob(Job job);
+  boolean addJob(AbstractJob job);
 
   /**
    * 移除已有的JOB
@@ -31,7 +31,7 @@ public interface IJobLoader {
    * @param job
    * @return /
    */
-  boolean removeJob(Job job);
+  boolean removeJob(AbstractJob job);
 
   /**
    * 停止正在运行的JOB
@@ -39,5 +39,5 @@ public interface IJobLoader {
    * @param job
    * @return /
    */
-  boolean stopJob(Job job);
+  boolean stopJob(AbstractJob job);
 }

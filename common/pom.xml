@@ -22,11 +22,6 @@
       <version>3.28.0-GA</version>
     </dependency>
     <dependency>
-      <groupId>io.github.jinlongliao</groupId>
-      <artifactId>commons-mapstruct</artifactId>
-      <version>1.0.1.release</version>
-    </dependency>
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
       <version>4.1.67.Final</version>

@@ -79,7 +79,11 @@ public class RequestParser {
 
     Map<String, String> paramMap = new HashMap<>(8);
     FullHttpRequest fullReq = (FullHttpRequest) request;
-    final boolean isJson = request.headers().get(HttpHeaderNames.CONTENT_TYPE).toLowerCase(Locale.ROOT).startsWith(JSON_CONTEXT);
+    boolean isJson = false;
+    final String contextType = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
+    if (contextType != null) {
+      isJson = contextType.toLowerCase(Locale.ROOT).startsWith(JSON_CONTEXT);
+    }
     if (isJson) {
       final ByteBuf content = ((FullHttpRequest) request).content();
       final int readableBytes = content.readableBytes();

@@ -1,6 +1,5 @@
 package io.github.jinlongliao.easytask.common.util;
 
-import com.sun.tools.classfile.Opcode;
 import io.github.jinlongliao.easytask.common.annotation.Order;
 
 import java.util.*;
@@ -17,19 +16,19 @@ import java.util.stream.Collectors;
 public class ServiceLoadUtil {
   private static Map<Class<?>, List<Class<?>>> CLASS_CACHE = new ConcurrentHashMap<>(8);
   private static Map<Class<?>, LoadProcess> LOAD_PROCESS_CACHE = new ConcurrentHashMap<>(8);
-  private static final LoadProcess DEFAULT_LOAD_PROCESS = new LoadProcess() {
+  private static final LoadProcess DEFAULT_LOAD_PROCESS = new LoadProcess<Object>() {
     @Override
-    public <T> List<Class<T>> initLoader(Iterator<T> iterator) {
+    public List<Class<Object>> initLoader(Iterator<Object> iterator) {
       return LoadProcess.super.initLoader(iterator);
     }
 
     @Override
-    public <T> List<Class<T>> filter(List<Class<T>> collection) {
+    public List<Class<Object>> filter(List<Class<Object>> collection) {
       return LoadProcess.super.filter(collection);
     }
 
     @Override
-    public <T> boolean beforeAdd(Class<T> tClass, List<Class<T>> classes, boolean sort) {
+    public boolean beforeAdd(Class<Object> tClass, List<Class<Object>> classes, boolean sort) {
       return LoadProcess.super.beforeAdd(tClass, classes, sort);
     }
   };
@@ -147,15 +146,14 @@ public class ServiceLoadUtil {
    * @author liaojinlong
    * @since 2021/9/6 22:38
    */
-  public interface LoadProcess {
+  public interface LoadProcess<T> {
     /**
      * 初步加载试
      *
      * @param iterator
-     * @param <T>
      * @return /
      */
-    default <T> List<Class<T>> initLoader(Iterator<T> iterator) {
+    default List<Class<T>> initLoader(Iterator<T> iterator) {
       final List<Class<T>> tmp = new ArrayList<>(8);
       iterator.forEachRemaining(t -> {
         tmp.add((Class<T>) t.getClass());
@@ -168,11 +166,10 @@ public class ServiceLoadUtil {
      * 过滤排序后
      *
      * @param collection
-     * @param <T>
      * @return /
      */
 
-    default <T> List<Class<T>> filter(List<Class<T>> collection) {
+    default List<Class<T>> filter(List<Class<T>> collection) {
       return toSort(collection);
     }
 
@@ -182,10 +179,9 @@ public class ServiceLoadUtil {
      * @param tClass
      * @param classList
      * @param sort
-     * @param <T>
      * @return /
      */
-    default <T> boolean beforeAdd(Class<T> tClass, List<Class<T>> classList, boolean sort) {
+    default boolean beforeAdd(Class<T> tClass, List<Class<T>> classList, boolean sort) {
       return true;
     }
   }

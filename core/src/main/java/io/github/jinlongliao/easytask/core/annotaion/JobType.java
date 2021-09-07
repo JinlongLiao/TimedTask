@@ -6,16 +6,12 @@ import java.lang.annotation.*;
 
 /**
  * @author liaojinlong
- * @since 2021/9/1 16:26
+ * @see {@link AbstractJob#getJobType()} 用于替代，优先级最高
+ * @since 2021/9/7 15:13
  */
 @Target({ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface JobHandler {
-  /**
-   * 处理的JOB 的类型
-   *
-   * @return /
-   */
-  Class<? extends AbstractJob>[] value();
+public @interface JobType {
+  String[] value();
 }

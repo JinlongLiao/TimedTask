@@ -67,9 +67,7 @@ public class EmbeddedServerDispatcher extends SimpleChannelInboundHandler<HttpOb
       response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR,
         Unpooled.wrappedBuffer(e.getLocalizedMessage().getBytes(StandardCharsets.UTF_8)));
     }
-    response.headers()
-      .set(CONTENT_TYPE, TEXT_PLAIN)
-      .setInt(CONTENT_LENGTH, response.content().readableBytes());
+    response.headers().setInt(CONTENT_LENGTH, response.content().readableBytes());
     if (keepAlive) {
       if (!req.protocolVersion().isKeepAliveDefault()) {
         response.headers().set(CONNECTION, KEEP_ALIVE);

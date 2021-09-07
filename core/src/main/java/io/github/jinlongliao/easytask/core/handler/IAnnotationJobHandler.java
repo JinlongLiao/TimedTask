@@ -2,7 +2,7 @@ package io.github.jinlongliao.easytask.core.handler;
 
 import io.github.jinlongliao.easytask.core.annotaion.JobHandler;
 import io.github.jinlongliao.easytask.core.exception.IllegalUseException;
-import io.github.jinlongliao.easytask.core.job.Job;
+import io.github.jinlongliao.easytask.core.job.AbstractJob;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +20,7 @@ public interface IAnnotationJobHandler extends IJobHandler {
    * @return /
    */
   @Override
-  default Collection<Class<? extends Job>> supportJob() {
+  default Collection<Class<? extends AbstractJob>> supportJob() {
 
     final JobHandler annotation = this.getClass().getAnnotation(JobHandler.class);
     if (annotation == null) {

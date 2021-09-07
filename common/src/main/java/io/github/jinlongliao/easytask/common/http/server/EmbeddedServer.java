@@ -44,6 +44,13 @@ public final class EmbeddedServer implements Closeable {
   private EventLoopGroup group;
   private EventLoopGroup child;
   private ServerBootstrap bootstrap;
+  /**
+   * 基础配置
+   */
+  private String host;
+  private int port;
+  private SslContext sslCtx;
+
 
   public void newServer(int port) throws Exception {
     this.newServer("0.0.0.0", port, null);
@@ -54,6 +61,9 @@ public final class EmbeddedServer implements Closeable {
   }
 
   public void newServer(String host, int port, SslContext sslCtx) throws Exception {
+    this.host = host;
+    this.port = port;
+    this.sslCtx = sslCtx;
     // Configure the server.
     final int processors = Runtime.getRuntime().availableProcessors();
     if (PlatformDependent.isOsx() || PlatformDependent.isWindows()) {
@@ -89,5 +99,21 @@ public final class EmbeddedServer implements Closeable {
       group.shutdownGracefully();
       child.shutdownGracefully();
     }
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public int getPort() {
+    return port;
+  }
+
+  public SslContext getSslCtx() {
+    return sslCtx;
+  }
+
+  public ServerBootstrap getBootstrap() {
+    return bootstrap;
   }
 }
