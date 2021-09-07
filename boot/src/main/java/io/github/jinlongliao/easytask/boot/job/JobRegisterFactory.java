@@ -2,7 +2,7 @@ package io.github.jinlongliao.easytask.boot.job;
 
 import io.github.jinlongliao.commons.mapstruct.BeanCopierUtils;
 import io.github.jinlongliao.commons.mapstruct.core.IData2Object;
-import io.github.jinlongliao.easytask.common.util.ServiceLoadUtil;
+import io.github.jinlongliao.easytask.common.util.ServiceLoaderUtil;
 import io.github.jinlongliao.easytask.core.exception.NotFountException;
 import io.github.jinlongliao.easytask.core.job.AbstractJob;
 
@@ -30,7 +30,7 @@ public class JobRegisterFactory {
 
   private JobRegisterFactory() {
     JobRegisterFactory.jobLoadProcess = new DefaultJobLoadProcess();
-    ServiceLoadUtil.loadClass(AbstractJob.class, jobLoadProcess);
+    ServiceLoaderUtil.loadClass(AbstractJob.class, jobLoadProcess);
   }
 
   /**

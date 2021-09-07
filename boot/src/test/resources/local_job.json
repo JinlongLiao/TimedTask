@@ -1,0 +1,10 @@
+[
+  {
+    "className": "io.github.jinlongliao.easytask.boot.job.impl.RegisterJob",
+    "jsonData": "{\n       \"groupKey\":\"test\",\n       \"taskId\":\"taskId\",\n       \"msgType\":\"register_job\",\n       \"extraData\":\"extraData\",\n       \"unionKey\":\"test\"\n   }"
+  },
+  {
+    "className": "io.github.jinlongliao.easytask.boot.job.impl.RegisterJob",
+    "jsonData": "{\"groupKey\":\"test\",\"taskId\":\"taskId\",\"msgType\":\"register_job\",\"extraData\":\"extraData\",\"unionKey\":\"test\"}"
+  }
+]

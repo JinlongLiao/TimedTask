@@ -24,3 +24,6 @@ hs_err_pid*
 /.idea/
 /core/target/
 /common/target/
+/boot/target/
+/boot/target/
+/plugins/delay-task/target/

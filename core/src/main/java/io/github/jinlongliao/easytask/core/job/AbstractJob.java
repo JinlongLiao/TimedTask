@@ -14,7 +14,8 @@ public abstract class AbstractJob {
   /**
    * 任务状态
    */
-  private JobStatus jobStatus;
+  private JobStatus jobStatus = JobStatus.NORMAL;
+
   /**
    * 客户端组的唯一ID
    */
@@ -34,6 +35,7 @@ public abstract class AbstractJob {
    */
   private String extraData;
 
+  protected Collection<String> jobType;
 
   public JobStatus getJobStatus() {
     return jobStatus;
@@ -81,6 +83,10 @@ public abstract class AbstractJob {
    * return /
    */
   public abstract Collection<String> getJobType();
+
+  public void setJobType(Collection<String> jobType) {
+    this.jobType = jobType;
+  }
 
   /**
    * 用于标识任务的唯一标识

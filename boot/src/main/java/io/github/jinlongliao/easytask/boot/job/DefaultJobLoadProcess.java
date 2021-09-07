@@ -2,7 +2,7 @@ package io.github.jinlongliao.easytask.boot.job;
 
 import io.github.jinlongliao.commons.mapstruct.core.Proxy;
 import io.github.jinlongliao.easytask.boot.job.converter.DataTypeConverter;
-import io.github.jinlongliao.easytask.common.util.ServiceLoadUtil;
+import io.github.jinlongliao.easytask.common.util.ServiceLoaderUtil;
 import io.github.jinlongliao.easytask.core.annotaion.JobType;
 import io.github.jinlongliao.easytask.core.job.AbstractJob;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author liaojinlong
  * @since 2021/9/7 9:59
  */
-public class DefaultJobLoadProcess implements ServiceLoadUtil.LoadProcess<AbstractJob> {
+public class DefaultJobLoadProcess implements ServiceLoaderUtil.LoadProcess<AbstractJob> {
   private static final Logger log = LoggerFactory.getLogger(DefaultJobLoadProcess.class);
   private static Map<Type, String> VALUE_CONVERTER;
 
@@ -49,12 +49,12 @@ public class DefaultJobLoadProcess implements ServiceLoadUtil.LoadProcess<Abstra
 
   @Override
   public List<Class<AbstractJob>> initLoader(Iterator<AbstractJob> iterator) {
-    return ServiceLoadUtil.LoadProcess.super.initLoader(iterator);
+    return ServiceLoaderUtil.LoadProcess.super.initLoader(iterator);
   }
 
   @Override
   public List<Class<AbstractJob>> filter(List<Class<AbstractJob>> collection) {
-    final List<Class<AbstractJob>> classes = ServiceLoadUtil.LoadProcess.super.filter(collection);
+    final List<Class<AbstractJob>> classes = ServiceLoaderUtil.LoadProcess.super.filter(collection);
     classes.stream().forEach(item -> register(item));
     return classes;
   }
@@ -62,7 +62,7 @@ public class DefaultJobLoadProcess implements ServiceLoadUtil.LoadProcess<Abstra
   @Override
   public boolean beforeAdd(Class<AbstractJob> tClass, List<Class<AbstractJob>> classList, boolean sort) {
     classList.stream().forEach(item -> register(item));
-    return ServiceLoadUtil.LoadProcess.super.beforeAdd(tClass, classList, sort);
+    return ServiceLoaderUtil.LoadProcess.super.beforeAdd(tClass, classList, sort);
   }
 
   /**

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author liaojinlong
  * @since 2021/9/6 19:04
  */
-public class ServiceLoadUtil {
+public class ServiceLoaderUtil {
   private static Map<Class<?>, List<Class<?>>> CLASS_CACHE = new ConcurrentHashMap<>(8);
   private static Map<Class<?>, LoadProcess> LOAD_PROCESS_CACHE = new ConcurrentHashMap<>(8);
   private static final LoadProcess DEFAULT_LOAD_PROCESS = new LoadProcess<Object>() {

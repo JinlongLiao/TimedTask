@@ -14,10 +14,13 @@ import java.util.Collection;
 public abstract class AbstractAnnotationJob extends AbstractJob {
   @Override
   public Collection<String> getJobType() {
+    if (jobType != null) {
+      return jobType;
+    }
     final JobType annotation = this.getClass().getAnnotation(JobType.class);
     if (annotation == null) {
       throw new IllegalUseException("not annotation with  " + JobType.class.getName());
     }
-    return Arrays.asList(annotation.value());
+    return jobType = Arrays.asList(annotation.value());
   }
 }

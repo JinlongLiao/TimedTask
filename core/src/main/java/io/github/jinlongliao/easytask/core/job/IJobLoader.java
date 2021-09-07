@@ -1,7 +1,7 @@
 package io.github.jinlongliao.easytask.core.job;
 
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * 加载任务
@@ -15,7 +15,7 @@ public interface IJobLoader {
    *
    * @return /
    */
-  List<AbstractJob> loadAllJob();
+  Set<AbstractJob> loadAllJob();
 
   /**
    * 新增JOB
@@ -40,4 +40,9 @@ public interface IJobLoader {
    * @return /
    */
   boolean stopJob(AbstractJob job);
+
+  /**
+   * 刷新缓存
+   */
+  void flush();
 }

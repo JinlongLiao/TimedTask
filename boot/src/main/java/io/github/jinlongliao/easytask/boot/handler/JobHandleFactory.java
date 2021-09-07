@@ -1,6 +1,6 @@
 package io.github.jinlongliao.easytask.boot.handler;
 
-import io.github.jinlongliao.easytask.common.util.ServiceLoadUtil;
+import io.github.jinlongliao.easytask.common.util.ServiceLoaderUtil;
 import io.github.jinlongliao.easytask.core.JobDispatcherFactory;
 import io.github.jinlongliao.easytask.core.handler.IJobHandler;
 import io.github.jinlongliao.easytask.core.job.AbstractJob;
@@ -17,7 +17,7 @@ public class JobHandleFactory {
   private static final JobDispatcherFactory JOB_DISPATCHER_FACTORY = JobDispatcherFactory.getInstance();
   private static final List<IJobHandler> JOB_HANDLERS = new ArrayList<>(16);
 
-  public static final ServiceLoadUtil.LoadProcess<IJobHandler> JOB_LOAD_PROCESS = new ServiceLoadUtil.LoadProcess<IJobHandler>() {
+  public static final ServiceLoaderUtil.LoadProcess<IJobHandler> JOB_LOAD_PROCESS = new ServiceLoaderUtil.LoadProcess<IJobHandler>() {
     @Override
     public List<Class<IJobHandler>> initLoader(Iterator<IJobHandler> iterator) {
       iterator.forEachRemaining(t -> {
@@ -25,7 +25,7 @@ public class JobHandleFactory {
           JOB_DISPATCHER_FACTORY.addNewJobHandler(t);
         }
       );
-      return ServiceLoadUtil.LoadProcess.super.initLoader(iterator);
+      return ServiceLoaderUtil.LoadProcess.super.initLoader(iterator);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class JobHandleFactory {
   }
 
   private JobHandleFactory() {
-    ServiceLoadUtil.loadClass(IJobHandler.class, JOB_LOAD_PROCESS);
+    ServiceLoaderUtil.loadClass(IJobHandler.class, JOB_LOAD_PROCESS);
   }
 
   public void addNewJobHandler(IJobHandler jobHandler) {
