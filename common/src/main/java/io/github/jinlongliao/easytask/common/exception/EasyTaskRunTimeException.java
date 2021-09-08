@@ -1,4 +1,4 @@
-package io.github.jinlongliao.easytask.core.exception;
+package io.github.jinlongliao.easytask.common.exception;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

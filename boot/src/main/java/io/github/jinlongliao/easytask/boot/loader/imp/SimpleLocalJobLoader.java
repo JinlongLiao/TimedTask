@@ -27,7 +27,6 @@ import java.util.*;
 
 public class SimpleLocalJobLoader implements IJobLoader {
   private static final Logger log = LoggerFactory.getLogger(SimpleLocalJobLoader.class);
-  protected JobRegisterFactory jobRegisterFactory = JobRegisterFactory.getInstance();
   /**
    * 基于JSON 的配置的本地
    */
@@ -42,11 +41,10 @@ public class SimpleLocalJobLoader implements IJobLoader {
   }
 
   @Override
-  public Set<AbstractJob> loadAllJob() {
-    if (jobSet != null) {
-      return jobSet;
+  public Set<AbstractJob> reLoadJob() {
+    if (this.localConf == null) {
+      this.localConf = getLocalConf(JOB_CONF);
     }
-    this.localConf = getLocalConf(JOB_CONF);
     if (this.localConf != null) {
       InputStream inputStream = null;
       try {
@@ -87,6 +85,14 @@ public class SimpleLocalJobLoader implements IJobLoader {
       }
     }
     return jobSet;
+  }
+
+  @Override
+  public Set<AbstractJob> loadAllJob() {
+    if (jobSet != null) {
+      return jobSet;
+    }
+    return this.reLoadJob();
   }
 
   @Override

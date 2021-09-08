@@ -3,9 +3,11 @@ package io.github.jinlongliao.easytask.boot.loader;
 import io.github.jinlongliao.easytask.boot.job.impl.RegisterJob;
 import io.github.jinlongliao.easytask.boot.loader.imp.SimpleLocalJobLoader;
 import io.github.jinlongliao.easytask.core.job.AbstractJob;
+import io.github.jinlongliao.easytask.core.job.IJobLoader;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -32,6 +34,14 @@ public class LocalJobLoaderTest {
       localJobLoader.addJob(new RegisterJob());
       localJobLoader.flush();
     }));
+  }
 
+  @Test
+  public void factoryTest() {
+    final Collection<IJobLoader> allJobLoader = JobLoaderFactory.getInstance().getAllJobLoader();
+    allJobLoader.forEach(jobLoad -> {
+      final Set<AbstractJob> abstractJobs = jobLoad.loadAllJob();
+      Assert.assertNotNull(abstractJobs);
+    });
   }
 }

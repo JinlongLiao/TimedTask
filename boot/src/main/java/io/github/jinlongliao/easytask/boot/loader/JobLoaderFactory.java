@@ -36,6 +36,7 @@ public class JobLoaderFactory {
         return ServiceLoaderUtil.LoadProcess.super.initLoader(iterator);
       }
     });
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> JOB_LOADER_SET.forEach(t -> t.flush())));
   }
 
   /**

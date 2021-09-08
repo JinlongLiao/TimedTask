@@ -1,4 +1,4 @@
-package io.github.jinlongliao.easytask.timetask.job;
+package io.github.jinlongliao.easytask.delaytask.job;
 
 import io.github.jinlongliao.easytask.core.annotaion.JobType;
 import io.github.jinlongliao.easytask.core.job.AbstractAnnotationJob;

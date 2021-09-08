@@ -11,6 +11,13 @@ import java.util.Set;
  */
 public interface IJobLoader {
   /**
+   * 重新加载所有的Job
+   *
+   * @return /
+   */
+  Set<AbstractJob> reLoadJob();
+
+  /**
    * 加载所有的Job
    *
    * @return /

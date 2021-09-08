@@ -1,6 +1,8 @@
 package io.github.jinlongliao.easytask.boot;
 
 import io.github.jinlongliao.easytask.boot.core.HandlerMsgV1Service;
+import io.github.jinlongliao.easytask.boot.handler.JobHandleFactory;
+import io.github.jinlongliao.easytask.boot.loader.JobLoaderFactory;
 import io.github.jinlongliao.easytask.common.http.server.EmbeddedServer;
 import io.github.jinlongliao.easytask.common.http.server.EmbeddedServerDispatcher;
 import io.github.jinlongliao.easytask.common.http.server.hanler.*;
@@ -17,6 +19,24 @@ import org.slf4j.LoggerFactory;
 public class DefaultBootStart {
   private static final Logger log = LoggerFactory.getLogger(DefaultBootStart.class);
   private EmbeddedServer embeddedServer;
+  private JobLoaderFactory jobLoaderFactory = JobLoaderFactory.getInstance();
+  private JobHandleFactory jobHandleFactory = JobHandleFactory.getInstance();
+
+  public DefaultBootStart() {
+    super();
+    jobLoaderFactory.getAllJobLoader()
+      .stream()
+      .forEach(
+        t -> t.loadAllJob()
+          .forEach(
+            job -> {
+              log.info("启动时本地加载JOB {}", job);
+              jobHandleFactory.dispatcherJob(job);
+
+            }
+          )
+      );
+  }
 
   public void startServer(String host, int port, SslContext sslCtx) {
     final HandlerFactory factory = HandlerFactory.getInstance();

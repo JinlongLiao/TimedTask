@@ -6,7 +6,7 @@ package io.github.jinlongliao.easytask.common.exception;
  * @author liaojinlong
  * @since 2021/8/30 19:44
  */
-public class NotSupportException extends RuntimeException {
+public class NotSupportException extends EasyTaskRunTimeException {
   public NotSupportException() {
     super();
   }
