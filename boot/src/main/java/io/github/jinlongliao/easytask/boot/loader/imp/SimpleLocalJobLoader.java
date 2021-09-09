@@ -92,7 +92,8 @@ public class SimpleLocalJobLoader implements IJobLoader {
     if (jobSet != null) {
       return jobSet;
     }
-    return this.reLoadJob();
+    final Set<AbstractJob> abstractJobs = this.reLoadJob();
+    return abstractJobs == null ? Collections.emptySet() : abstractJobs;
   }
 
   @Override
@@ -101,6 +102,9 @@ public class SimpleLocalJobLoader implements IJobLoader {
   }
 
   private void flushJobToFile(Set<AbstractJob> job, URL url) {
+    if (job == null) {
+      return;
+    }
     List<LocalJobModel> jobModels = new ArrayList<>(job.size());
     job.stream().forEach(node -> {
       jobModels.add(new LocalJobModel(node.getClass().getName(), JSONObject.toJSONString(node)));

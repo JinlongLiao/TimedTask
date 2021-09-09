@@ -23,10 +23,7 @@ class WrapScheduledFuture<V> implements ScheduledFuture<V> {
 
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
-    if (mayInterruptIfRunning) {
-      this.runnableTask.setRunning(false);
-    }
-    return scheduledFuture.cancel(mayInterruptIfRunning);
+    return runnableTask.stop();
   }
 
   @Override
@@ -47,5 +44,12 @@ class WrapScheduledFuture<V> implements ScheduledFuture<V> {
   @Override
   public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
     return scheduledFuture.get(timeout, unit);
+  }
+
+  public boolean cancel0(boolean mayInterruptIfRunning) {
+    if (mayInterruptIfRunning) {
+      this.runnableTask.setRunning(false);
+    }
+    return scheduledFuture.cancel(mayInterruptIfRunning);
   }
 }

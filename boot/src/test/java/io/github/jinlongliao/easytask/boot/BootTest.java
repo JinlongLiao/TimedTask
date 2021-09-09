@@ -12,6 +12,6 @@ public class BootTest {
   @Test
   public void testServer() throws InterruptedException {
     new DefaultBootStart().startServer("0.0.0.0", 8888, null);
-    Thread.sleep(Integer.MAX_VALUE);
+    // Thread.sleep(Integer.MAX_VALUE);
   }
 }

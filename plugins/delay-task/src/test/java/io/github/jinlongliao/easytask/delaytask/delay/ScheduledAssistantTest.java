@@ -25,19 +25,19 @@ public class ScheduledAssistantTest {
    * 立刻执行
    */
   @Test
-
   public void runImmediately() throws InterruptedException {
     System.out.println("start timeMillis = " + System.currentTimeMillis());
-    final ScheduledFuture<?> scheduledFuture1 = scheduledAssistant.runDelayTask(task);
-    final ScheduledFuture<?> scheduledFuture2 = scheduledAssistant.runDelayTask(task2);
+    scheduledAssistant.runDelayTask(task);
+    final ScheduledFuture<?> future = scheduledAssistant.runDelayTask(task2);
     Thread.sleep(50);
     task2.stop();
+    future.cancel(true);
     Thread.sleep(5000);
   }
 }
 
-class RunnableTaskTest extends RunnableTask {
-  private String taskName;
+class RunnableTaskTest extends RunnableTask<Void> {
+  private final String taskName;
 
   public RunnableTaskTest(String taskName, long initialDelay, TimeUnit unit) {
     super(initialDelay, unit);
@@ -45,9 +45,10 @@ class RunnableTaskTest extends RunnableTask {
   }
 
   @Override
-  public void stop() {
+  public boolean stop() {
     super.stop();
     System.out.println(taskName + " stop timeMillis = " + System.currentTimeMillis());
+    return false;
   }
 
   @Override
@@ -55,7 +56,7 @@ class RunnableTaskTest extends RunnableTask {
     System.out.println(taskName + " running timeMillis = " + System.currentTimeMillis());
     return null;
   }
-};
+}
 
 
 

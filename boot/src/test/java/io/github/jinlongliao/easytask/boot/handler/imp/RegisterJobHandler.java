@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
  * @since 2021/9/7 17:38
  */
 @JobHandler(RegisterJob.class)
-public class RegisterJobHandler implements IAnnotationJobHandler {
+public class RegisterJobHandler implements IAnnotationJobHandler<RegisterJob> {
   private static final Logger log = LoggerFactory.getLogger(RegisterJobHandler.class);
 
   @Override
-  public boolean handlerJob(AbstractJob job) {
+  public boolean handlerJob(RegisterJob job) {
     log.info("RegisterJob:{}", job);
     return false;
   }

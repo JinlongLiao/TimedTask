@@ -7,10 +7,10 @@ import java.util.concurrent.*;
  * @since 2021/9/8 19:14
  */
 public abstract class RunnableTask<V> implements Callable<V> {
-  private ScheduledFuture<V> scheduledFuture;
+  private WrapScheduledFuture<V> scheduledFuture;
   private boolean running = true;
-  private long initialDelay;
-  private TimeUnit unit;
+  private final long initialDelay;
+  private final TimeUnit unit;
 
   public RunnableTask(long initialDelay, TimeUnit unit) {
     this.initialDelay = initialDelay;
@@ -18,7 +18,7 @@ public abstract class RunnableTask<V> implements Callable<V> {
   }
 
   public boolean isRunning() {
-    return running;
+    return running & scheduledFuture.isDone();
   }
 
   public long getInitialDelay() {
@@ -30,7 +30,7 @@ public abstract class RunnableTask<V> implements Callable<V> {
   }
 
   @Override
-  public V call() throws Exception {
+  public V call() {
     if (!running) {
       return null;
     }
@@ -46,16 +46,19 @@ public abstract class RunnableTask<V> implements Callable<V> {
 
   /**
    * 立即停止
+   *
+   * @return /
    */
-  public void stop() {
-    this.stop(true);
+  public boolean stop() {
+    return this.stop(true);
   }
 
-  public void stop(boolean mayInterruptIfRunning) {
+  public boolean stop(boolean mayInterruptIfRunning) {
     this.running = false;
     if (scheduledFuture != null) {
-      scheduledFuture.cancel(mayInterruptIfRunning);
+      return scheduledFuture.cancel0(mayInterruptIfRunning);
     }
+    return false;
   }
 
   public void setRunning(boolean running) {
@@ -67,7 +70,7 @@ public abstract class RunnableTask<V> implements Callable<V> {
   }
 
   public ScheduledFuture<V> setScheduledFuture(ScheduledFuture<V> scheduledFuture) {
-    return this.scheduledFuture = new WrapScheduledFuture<V>(scheduledFuture, this);
+    return this.scheduledFuture = new WrapScheduledFuture<>(scheduledFuture, this);
   }
 }
 

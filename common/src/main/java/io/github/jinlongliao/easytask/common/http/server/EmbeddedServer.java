@@ -66,7 +66,8 @@ public final class EmbeddedServer implements Closeable {
     this.sslCtx = sslCtx;
     // Configure the server.
     final int processors = Runtime.getRuntime().availableProcessors();
-    if (PlatformDependent.isOsx() || PlatformDependent.isWindows()) {
+    final boolean linux = PlatformDependent.normalizedOs().equalsIgnoreCase("linux");
+    if (!linux) {
       group = new NioEventLoopGroup(1);
       child = new NioEventLoopGroup(processors);
     } else {

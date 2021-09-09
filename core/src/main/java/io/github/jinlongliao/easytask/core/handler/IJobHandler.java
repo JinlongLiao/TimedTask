@@ -10,19 +10,19 @@ import java.util.Collection;
  * @author liaojinlong
  * @since 2021/9/1 16:24
  */
-public interface IJobHandler {
+public interface IJobHandler<T extends AbstractJob> {
   /**
    * 处理Job
    *
    * @param job
    * @return /
    */
-  boolean handlerJob(AbstractJob job);
+  boolean handlerJob(T job);
 
   /**
    * 返回支持处理的JOB
    *
    * @return /
    */
-  Collection<Class<? extends AbstractJob>> supportJob();
+  Collection<Class<? extends T>> supportJob();
 }

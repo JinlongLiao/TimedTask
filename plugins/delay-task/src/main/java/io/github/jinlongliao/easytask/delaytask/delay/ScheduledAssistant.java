@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,19 +18,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2021/9/8 12:15
  */
 public class ScheduledAssistant {
-  private static AtomicInteger atomicInteger = new AtomicInteger(0);
+  private final static AtomicInteger INTEGER = new AtomicInteger(0);
   private static final Logger log = LoggerFactory.getLogger(ScheduledAssistant.class);
-  private static ScheduledAssistant mInstance;
+
+  private static final class Tmp {
+    static final ScheduledAssistant INSTANCE = new ScheduledAssistant();
+  }
 
   public static ScheduledAssistant getInstance() {
-    if (mInstance == null) {
-      synchronized (ScheduledAssistant.class) {
-        if (mInstance == null) {
-          mInstance = new ScheduledAssistant();
-        }
-      }
-    }
-    return mInstance;
+    return Tmp.INSTANCE;
   }
 
   private ScheduledAssistant() {
@@ -39,18 +35,17 @@ public class ScheduledAssistant {
   private static final ScheduledThreadPoolExecutor SCHEDULED_THREAD_POOL_EXECUTOR = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
     r -> {
       final Thread thread = new Thread(r);
-      thread.setName("ScheduledThreadPool:" + atomicInteger.getAndIncrement());
+      thread.setName("ScheduledThreadPool:" + INTEGER.getAndIncrement());
       return thread;
     },
     (r, executor) -> log.warn("Add Runnable error, throw Runnable :{}", r)
   );
 
 
-
   /**
    * 依据指定的时间 延迟执行
    *
-   * @param task
+   * @param task s
    * @return /
    */
   public ScheduledFuture<?> runDelayTask(RunnableTask task) {

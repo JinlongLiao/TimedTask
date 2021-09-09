@@ -1,15 +1,16 @@
 package io.github.jinlongliao.easytask.common.http.server;
 
 import com.alibaba.fastjson.JSON;
+import io.github.jinlongliao.easytask.common.http.client.HttpClient;
 import io.github.jinlongliao.easytask.common.http.server.hanler.RequestParser;
 import io.github.jinlongliao.easytask.common.http.server.hanler.HandlerFactory;
 import io.github.jinlongliao.easytask.common.http.server.hanler.IHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
-import okhttp3.*;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,13 +29,14 @@ public class EmbeddedServerTest {
     final LocalDate localDate = now.plusYears(-18l);
 
     final EmbeddedServer embeddedServer = new EmbeddedServer();
-    new Thread(() -> {
+    final Thread thread = new Thread(() -> {
       try {
         embeddedServer.newServer(8888);
       } catch (Exception e) {
         e.printStackTrace();
       }
-    }).start();
+    });
+    thread.start();
     final HandlerFactory factory = HandlerFactory.getInstance();
     factory.addHandler(EmbeddedServerDispatcher.class, new IHandler() {
       @Override
@@ -53,18 +55,14 @@ public class EmbeddedServerTest {
         return response;
       }
     });
-    OkHttpClient client = new OkHttpClient().newBuilder()
-      .build();
-    MediaType mediaType = MediaType.parse("application/json; charset=UTF-8");
-    RequestBody body = RequestBody.create("{\"assignee\" : \"jbarrez\"}", mediaType);
-    Request request = new Request.Builder()
-      .url("http://localhost:8888/uewuew")
-      .method("POST", body)
-      .addHeader("Content-Type", "application/json; charset=UTF-8")
-      .build();
-    Response response = client.newCall(request).execute();
-    System.out.println("response = " + response);
-    Thread.sleep(2000 * 1000);
+    final String body = HttpClient.post(new URL("http://localhost:8888/uewuew"))
+      .acceptJson()
+      .contentType(HttpClient.CONTENT_TYPE_JSON, HttpClient.CHARSET_UTF8)
+      .send("{\"assignee\" : \"jbarrez\"}")
+      .body(HttpClient.CHARSET_UTF8);
+
+    System.out.println("response = " + body);
+    Thread.sleep(5 * 1000);
     embeddedServer.shutdown();
   }
 }

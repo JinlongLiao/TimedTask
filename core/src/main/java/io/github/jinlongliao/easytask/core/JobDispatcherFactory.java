@@ -26,7 +26,7 @@ public class JobDispatcherFactory {
 
   public void refreshJobHandler(Set<IJobHandler> jobHandlers) {
     Map<Class<? extends AbstractJob>, IJobHandler> temp = new HashMap<>(jobHandlers.size() * 2);
-    jobHandlers.forEach(item -> item.supportJob().forEach(node -> temp.put(node, item)));
+    jobHandlers.forEach(item -> item.supportJob().forEach(node -> temp.put((Class<? extends AbstractJob>) node, item)));
     this.fastMatchCache = temp;
     this.jobHandlers = jobHandlers;
   }
@@ -38,7 +38,7 @@ public class JobDispatcherFactory {
   public boolean addNewJobHandler(IJobHandler jobHandler) {
     final boolean add = jobHandlers.add(jobHandler);
     if (add) {
-      jobHandler.supportJob().forEach(item -> fastMatchCache.put(item, jobHandler));
+      jobHandler.supportJob().forEach(item -> fastMatchCache.put((Class<? extends AbstractJob>) item, jobHandler));
     }
     return add;
   }

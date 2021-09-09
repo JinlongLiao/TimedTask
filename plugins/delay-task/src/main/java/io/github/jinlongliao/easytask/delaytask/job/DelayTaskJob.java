@@ -10,5 +10,4 @@ import io.github.jinlongliao.easytask.core.job.AbstractAnnotationJob;
 @JobType({DelayTaskJob.DELAY_JOB})
 public class DelayTaskJob extends AbstractAnnotationJob {
   public static final String DELAY_JOB = ("DELAY_JOB");
-
 }

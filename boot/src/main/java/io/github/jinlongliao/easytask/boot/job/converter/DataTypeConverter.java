@@ -2,6 +2,8 @@ package io.github.jinlongliao.easytask.boot.job.converter;
 
 import io.github.jinlongliao.easytask.core.constant.JobStatus;
 
+import java.util.Collection;
+
 /**
  * 数据类型转换
  *
@@ -13,6 +15,11 @@ public class DataTypeConverter {
     if (obj == null) {
       return JobStatus.NORMAL;
     }
-    return obj.equals(JobStatus.NORMAL.getType()) ? JobStatus.NORMAL : JobStatus.STOP;
+    return obj.toString().equals("NORMAL") ? JobStatus.NORMAL : JobStatus.STOP;
+  }
+
+  public static Collection collection(Object obj) {
+    return null;
+
   }
 }
