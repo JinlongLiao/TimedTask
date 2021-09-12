@@ -2,6 +2,7 @@ package io.github.jinlongliao.easytask.delaytask;
 
 import com.alibaba.fastjson.JSONObject;
 import io.github.jinlongliao.easytask.boot.DefaultBootStart;
+import io.github.jinlongliao.easytask.common.http.client.HttpClient;
 import io.github.jinlongliao.easytask.core.constant.JobStatus;
 import io.github.jinlongliao.easytask.delaytask.delay.TestDelayTaskHandler;
 import io.github.jinlongliao.easytask.delaytask.handler.DelayTaskModel;
@@ -11,6 +12,7 @@ import io.github.jinlongliao.easytask.delaytask.job.DelayTaskJob;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 public class BootTest {
@@ -31,8 +33,14 @@ public class BootTest {
     delayTaskJob.setGroupKey("delay");
     delayTaskJob.setUnionKey("delay");
     delayTaskJob.setExtraData(JSONObject.toJSONString(delayTaskModel));
-    System.out.println("\nJOB:\n" + JSONObject.toJSONString(delayTaskJob));
-
+    String data = JSONObject.toJSONString(delayTaskJob);
+    System.out.println("\nJOB:\n" + data);
+    String body = HttpClient.post("http://127.0.0.1:8888/v1")
+      .acceptJson()
+      .contentType(HttpClient.CONTENT_TYPE_JSON, HttpClient.CHARSET_UTF8)
+      .send(data)
+      .body(StandardCharsets.UTF_8.name());
+    System.out.println("body = " + body);
   }
 
   @Ignore
@@ -41,6 +49,6 @@ public class BootTest {
     final DelayTaskHandlerFactory delayTaskHandlerFactory = DelayTaskHandlerFactory.getInstance();
     delayTaskHandlerFactory.addHandler("delay", new TestDelayTaskHandler());
     new DefaultBootStart().startServer("0.0.0.0", 8888, null);
-    // Thread.sleep(Integer.MAX_VALUE);
+    Thread.sleep(Integer.MAX_VALUE);
   }
 }

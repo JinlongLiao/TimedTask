@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class HandlerMsgV1Service implements IHandler {
   private static final Logger log = LoggerFactory.getLogger(HandlerMsgV1Service.class);
-  private static final String MSG_TYPE = "msgType";
+  private static final String JOB_TYPE = "jobType";
   private static final String RES_SUCCESS = "{\"result\":200}";
   private static final String RES_ERROR = "{\"result\":500,\"errorMsg\":\"%s\"}";
   private static JobRegisterFactory jobRegisterFactory = JobRegisterFactory.getInstance();
@@ -38,7 +38,7 @@ public class HandlerMsgV1Service implements IHandler {
     }
     FullHttpResponse response;
     try {
-      Map<String, String> paramMap = new RequestParser(request).parse();
+      Map<String, Object> paramMap = new RequestParser(request).parse();
       AbstractJob job = toBuildMsg(paramMap);
       jobHandleFactory.dispatcherJob(job);
       response = new DefaultFullHttpResponse(request.protocolVersion(),
@@ -56,8 +56,13 @@ public class HandlerMsgV1Service implements IHandler {
     return response;
   }
 
-  private AbstractJob toBuildMsg(Map<String, String> paramMap) throws Exception {
-    final String msgType = Optional.ofNullable(paramMap.get(MSG_TYPE)).orElseThrow(() -> new NotFountException("未发现此消息类型"));
+  private AbstractJob toBuildMsg(Map<String, Object> paramMap) throws Exception {
+    if (!paramMap.containsKey(JOB_TYPE)) {
+      throw new NotFountException("未发现此消息类型");
+    }
+    Object msg = paramMap.get(JOB_TYPE);
+    final String msgType = String.valueOf(msg instanceof Collection ? ((Collection) msg).iterator().next() : msg);
+
     return jobRegisterFactory.parseJobMsg(msgType, new HashMap<>(paramMap));
   }
 

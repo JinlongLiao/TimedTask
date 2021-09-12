@@ -47,7 +47,7 @@ public class EmbeddedServerTest {
       @Override
       public FullHttpResponse handle(HttpRequest request) throws IOException {
         // 将GET, POST所有请求参数转换成Map对象
-        Map<String, String> paramMap = new RequestParser(request).parse();
+        Map<String, Object> paramMap = new RequestParser(request).parse();
         final FullHttpResponse response = new DefaultFullHttpResponse(request.protocolVersion(),
           new HttpResponseStatus(200, ""),
           Unpooled.wrappedBuffer(JSON.toJSONBytes(paramMap)));

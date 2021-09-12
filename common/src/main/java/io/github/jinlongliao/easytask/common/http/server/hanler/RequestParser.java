@@ -35,10 +35,10 @@ public class RequestParser {
    * @return 包含所有请求参数的键值对, 如果没有参数, 则返回空Map
    * @throws IOException
    */
-  public Map<String, String> parse() throws IOException {
+  public Map<String, Object> parse() throws IOException {
     HttpMethod method = httpRequest.method();
 
-    Map<String, String> paramMap;
+    Map<String, Object> paramMap;
 
     if (HttpMethod.POST == method) {
       paramMap = parsePost(httpRequest);
@@ -72,12 +72,12 @@ public class RequestParser {
    * @param request
    * @return /
    */
-  private Map<String, String> parsePost(HttpRequest request) throws IOException {
+  private Map<String, Object> parsePost(HttpRequest request) throws IOException {
     if (!(request instanceof FullHttpRequest)) {
       return Collections.emptyMap();
     }
 
-    Map<String, String> paramMap = new HashMap<>(8);
+    Map<String, Object> paramMap = new HashMap<>(8);
     FullHttpRequest fullReq = (FullHttpRequest) request;
     boolean isJson = false;
     final String contextType = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
